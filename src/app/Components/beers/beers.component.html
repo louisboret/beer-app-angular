@@ -1,0 +1,18 @@
+
+<h2>Onze selectie</h2>
+
+<div class="container">
+  <div  *ngFor="let item of beers">
+    
+    <app-beer-detail [beer]="item" (reload)="reloadPage()"></app-beer-detail>
+  </div>
+</div>
+<div class="container">
+
+  <a class="btn btn-primary m-1" routerLink="/edit-beer">
+    <i class="bi bi-plus-circle"></i> beer
+  </a>
+  <a class="btn btn-primary m-1" routerLink="/add-brewery">
+    <i class="bi bi-plus-circle"></i> brewery
+  </a>
+</div>

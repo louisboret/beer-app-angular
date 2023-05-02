@@ -1,0 +1,12 @@
+<h2 class="text-center">Add Brewery</h2>
+<div class="container">
+    <div class="contact-us" *ngIf="newBrewery">
+        <div>
+            <input [(ngModel)]="newBrewery.name" placeholder="Name brewery" required type="text" />
+            <input [(ngModel)]="newBrewery.street" placeholder="Street" required type="text" />
+            <input [(ngModel)]="newBrewery.city" placeholder="City" required type="text" />
+            <input [(ngModel)]="newBrewery.country" placeholder="Country" required type="text" />
+            <button (click)="addBrewery()" type="button">Add</button>
+        </div>
+    </div>
+</div>

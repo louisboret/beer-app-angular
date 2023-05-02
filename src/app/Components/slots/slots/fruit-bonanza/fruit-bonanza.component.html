@@ -1,0 +1,58 @@
+<div class="container">
+    <button *ngIf="!isBonus" (click)="buyBonus()" class="bonusbuy">
+        <p>Buy Bonus</p>
+        <p>${{bonusbuy}}</p>
+    </button>
+    <div class="gamecontainer">
+        <div class="title">
+            <h1>{{pageTitle}}</h1>
+            <div class="bonuscont">
+                <h2 *ngIf="isBonus"> Free spins: {{freeSpins}}</h2>
+                <div *ngIf="isBonus" class="coin-outer-border">
+                    <div class="coin-inner-border">
+                        x {{multiplier}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="gamegrid">
+            <div *ngFor="let item of collection">
+                <img [src]="item.source" [className]="item.class"
+                    [@bonusSymbols]="item.class === bonusClass ? 'bonus' : 'lost'"
+                    [@newSymbols]="item.isNew ? 'new' : ''"
+                    [@winningSymbols]="item.class === winningClass ? 'won' : 'lost'">
+            </div>
+        </div>
+        <div class="actions">
+            <div>
+                <p>Credit: ${{credit}}</p>
+                <p>Bet: ${{bet}}</p>
+            </div>
+            <div class="wins" *ngIf="totalWin > 0">
+                <P>Win</P>
+                <p>${{totalWin}}</p>
+                <div>
+                    {{imageCount}}
+                    <img src={{winImage}} class="winImage">
+                    x ${{imageValue}} = ${{imagetotal}}
+                </div>
+            </div>
+            <button (click)="spin()" [disabled]="disableSpin">Spin</button>
+        </div>
+    </div>
+</div>
+<div class="container">
+
+    <div *ngIf="bonusEnded" (click)="hideBonusEndedMessage()" class="messageContainer">
+
+        <img src="/assets/images/congratulations.png" class="bonusMessage" [@bonusMessage]="bonusEnded? 'show' : ''">
+        <p class="message">You won ${{totalBonusWin}} in {{totalBonusSpins}} spins!</p>
+        <p>Click here to continue</p>
+    </div>
+    <div *ngIf="showBonusMessage" (click)="hideBonusMessage()" class="messageContainer">
+
+        <img src="https://cms.kingcasino.com/wp-content/uploads/2021/10/big-bonus-logo-slots.png" class="bonusMessage"
+            [@bonusMessage]="showBonusMessage ? 'show' : ''">
+        <p>Click here to continue</p>
+    </div>
+</div>

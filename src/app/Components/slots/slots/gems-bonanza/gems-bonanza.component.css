@@ -1,0 +1,185 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f9bc61;
+    overflow: hidden;
+    font-family: "Roboto";
+}
+
+.container {
+    width: 100vw;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gamecontainer {
+    text-align: center;
+    justify-content: start;
+    align-items: flex-start;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.gamegrid {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid black;
+    width: 775px;
+    height: 625px;
+    align-items: center;
+    padding: 10px;
+    justify-content: flex-start;
+    background-color: #543513;
+}
+
+.gamegrid>div > div {
+    width: 125px;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gamegrid>div>div>img {
+    width: 100px;
+    height: 100px;
+}
+
+.bonuscont {
+    display: flex;
+    width: 775px;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+
+.actions {
+    border: 1px solid black;
+    width: 775px;
+    height: 118px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2.5em;
+    padding: 10px;
+    text-align: left;
+}
+
+.actions>button {
+    width: 75px;
+    height: 75px;
+    border-radius: 50px;
+}
+
+.bonusbuy {
+    background-color: #feaf60;
+    border-radius: 20px;
+    border: 2px solid #e78d34;
+    align-self: flex-start;
+    margin: 30px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    padding: 17px 30px;
+    color: #fff;
+    font-size: 20.5px;
+    background: #00d301;
+    background: -webkit-linear-gradient(-196deg, #e78d34, #ffb300 50%, #feaf60);
+    background: -webkit-linear-gradient(164deg, #e78d34, #ffb300 50%, #feaf60);
+    background: linear-gradient(286deg, #e78d34, #ffb300 50%, #feaf60);
+    line-height: 30px;
+    font-weight: 800;
+    transition: backgroundcolor .1s ease-in-out;
+}
+
+
+
+
+.wins {
+    font-weight: bold;
+    font-size: medium;
+    text-align: center;
+    justify-content: center;
+}
+
+.wins>div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.wins>div>img {
+    width: 30px;
+    height: 30px !important;
+}
+
+.column {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 125px;
+}
+
+.coin-outer-border {
+    border: 1px solid black;
+    background-color: #ffd164;
+    border-radius: 50px;
+    ;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.coin-inner-border {
+    border: 1px solid black;
+    background-color: #edebed;
+    border-radius: 50px;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: large;
+    font-weight: bold;
+}
+
+.messageContainer {
+    width: 30vw;
+    margin-top: -800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    flex-direction: column;
+    background-color: #fde8c9;
+    border: 5px solid #f9bc61;
+    border-radius: 20px;
+    font-size: 3em;
+    padding: 20px;
+}
+
+.bonusMessage {
+    /*margin-left : -675px; */
+    font-size: 200px;
+    height: 500px;
+    color: #e78d34;
+}
+
+.message {
+    margin-top: -100px;
+    font-weight: bold;
+    font-size: 1.25em;
+}
