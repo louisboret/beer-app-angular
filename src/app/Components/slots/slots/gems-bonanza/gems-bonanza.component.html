@@ -1,20 +1,32 @@
 <div class="container">
+    <button *ngIf="!isBonus" (click)="buyBonus()" class="bonusbuy">
+        <p>Buy Bonus</p>
+        <p>${{bonusbuy}}</p>
+    </button>
     <div class="gamecontainer">
         <div class="title">
             <h1>{{pageTitle}}</h1>
+            <div class="bonuscont">
+                <h2 *ngIf="isBonus"> Free spins: {{freeSpins}}</h2>
+                <div *ngIf="isBonus" class="coin-outer-border">
+                    <div class="coin-inner-border">
+                        x {{multiplier}}
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="gamegrid">
             <div class="column" *ngFor="let column of collection">
                 <div *ngFor="let item of column">
-                    <img [src]="item.source" *ngIf="item.animationPlayed"
+                    <img title="{{item.index}}" [src]="item.source" *ngIf="item.animationPlayed || item.isNew"
                     [@bounceIn5]="itemIndex === item.collectionIndex && item.index === 0 ? 'bounce5' : ''"
                     [@bounceIn4]="itemIndex === item.collectionIndex && item.index === 1 ? 'bounce4' : ''"
                     [@bounceIn3]="itemIndex === item.collectionIndex && item.index === 2 ? 'bounce3' : ''"
                     [@bounceIn2]="itemIndex === item.collectionIndex && item.index === 3 ? 'bounce2' : ''"
                     [@bounceIn1]="itemIndex === item.collectionIndex && item.index === 4 ? 'bounce1' : ''"
-                    [@fallOne]="item.fallOne ? 'fall' : ''"
-                    
-                    [@winningSymbols]="item.class === winningClass ? 'won' : 'lost'">
+                    [@newSymbols]="item.isNew ? 'new' : ''"
+                    [@winningSymbols]="item.class === winningClass ? 'won' : 'lost'"
+                    [@bonusSymbols]="item.class === bonusClass ? 'bonus' : 'lost'"
                     >
                 </div>
             </div>
@@ -24,7 +36,31 @@
                 <p>Credit: ${{credit}}</p>
                 <p>Bet: ${{bet}}</p>
             </div>
+            <div class="wins" *ngIf="totalWin > 0">
+                <P>Win</P>
+                <p>${{totalWin}}</p>
+                <div>
+                    {{imageCount}}
+                    <img src={{winImage}} class="winImage">
+                    x ${{imageValue}} = ${{imagetotal}}
+                </div>
+            </div>
             <button (click)="spin()" [disabled]="disableSpin">Spin</button>
         </div>
+    </div>
+</div>
+<div class="container">
+
+    <div *ngIf="bonusEnded" (click)="hideBonusEndedMessage()" class="messageContainer">
+
+        <img src="/assets/images/congratulations.png" class="bonusMessage" [@bonusMessage]="bonusEnded? 'show' : ''">
+        <p class="message">You won ${{totalBonusWin}} in {{totalBonusSpins}} spins!</p>
+        <p>Click here to continue</p>
+    </div>
+    <div *ngIf="showBonusMessage" (click)="hideBonusMessage()" class="messageContainer">
+
+        <img src="https://cms.kingcasino.com/wp-content/uploads/2021/10/big-bonus-logo-slots.png" class="bonusMessage"
+            [@bonusMessage]="showBonusMessage ? 'show' : ''">
+        <p>Click here to continue</p>
     </div>
 </div>

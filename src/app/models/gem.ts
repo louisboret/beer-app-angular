@@ -7,4 +7,5 @@ export interface Gem {
     collectionIndex: number;
     animationPlayed: boolean;
     fallOne?: boolean;
+    fallTwo?: boolean;
 }

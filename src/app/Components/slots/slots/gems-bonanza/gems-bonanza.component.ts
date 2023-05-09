@@ -9,6 +9,8 @@ import {
   keyframes
 } from '@angular/animations';
 import { col } from 'sequelize';
+import { log } from 'console';
+import { last } from 'rxjs';
 
 @Component({
   selector: 'app-gems-bonanza',
@@ -52,19 +54,19 @@ import { col } from 'sequelize';
         ]))
       ]),
     ]),
-    trigger('fallOne', [
-      state('fall', style({})),
-      transition('* => fall', [
-        animate('.1s', keyframes([
-          style({ transform: 'translateY(-150px)', offset: 0 }),
-          style({ transform: 'translateY(0px)', offset: 1.0 }),
+    trigger('newSymbols', [
+      state('new', style({})),
+      transition('* => new', [
+        animate('1s', keyframes([
+          style({ height: 0, width: 0 }),
+          style({ height: 100, width: 100 }),
         ]))
       ]),
     ]),
     trigger('bounceIn5', [
       state('bounce5', style({ height: 100, width: 100, opacity: 1 })),
       transition('* => bounce5', [
-        animate('.1s', keyframes([
+        animate('.05s', keyframes([
           style({ transform: 'translateY(-525px)', offset: 0 }),
           style({ transform: 'translateY(0px)', offset: 1.0 }),
         ]))
@@ -73,7 +75,7 @@ import { col } from 'sequelize';
     trigger('bounceIn4', [
       state('bounce4', style({ height: 100, width: 100, opacity: 1 })),
       transition('* => bounce4', [
-        animate('.1s', keyframes([
+        animate('.05s', keyframes([
           style({ transform: 'translateY(-400px)', offset: 0 }),
           style({ transform: 'translateY(0px)', offset: 1.0 }),
         ]))
@@ -82,7 +84,7 @@ import { col } from 'sequelize';
     trigger('bounceIn3', [
       state('bounce3', style({ height: 100, width: 100, opacity: 1 })),
       transition('* => bounce3', [
-        animate('.1s', keyframes([
+        animate('.05s', keyframes([
           style({ transform: 'translateY(-275px)', offset: 0 }),
           style({ transform: 'translateY(0px)', offset: 1.0 }),
         ]))
@@ -91,7 +93,7 @@ import { col } from 'sequelize';
     trigger('bounceIn2', [
       state('bounce2', style({ height: 100, width: 100, opacity: 1 })),
       transition('* => bounce2', [
-        animate('.1s', keyframes([
+        animate('.05s', keyframes([
           style({ transform: 'translateY(-150px)', offset: 0 }),
           style({ transform: 'translateY(0px)', offset: 1.0 }),
         ]))
@@ -100,7 +102,7 @@ import { col } from 'sequelize';
     trigger('bounceIn1', [
       state('bounce1', style({ height: 100, width: 100, opacity: 1 })),
       transition('* => bounce1', [
-        animate('.1s', keyframes([
+        animate('.05s', keyframes([
           style({ transform: 'translateY(-25px)', offset: 0 }),
           style({ transform: 'translateY(0px)', offset: 1.0 }),
         ]))
@@ -138,6 +140,7 @@ export class GemsBonanzaComponent {
 
   ngOnInit(): void {
     this.spin();
+    this.bonusbuy = this.bet * 100;
   }
 
 
@@ -147,8 +150,10 @@ export class GemsBonanzaComponent {
     this.winningClass = '';
     this.winImage = '';
     this.bonusClass = '';
+    if(this.takebet) {
+      !this.isBonus ? this.credit -= this.bet : this.freeSpins--;
+    }
     await this.fillCollection();
-
 
     this.disableSpin = false;
 
@@ -160,7 +165,7 @@ export class GemsBonanzaComponent {
     this.takebet = true;
     await this.checkBet();
 
-    // this.checkBonus();
+    this.checkBonus();
   }
 
   checkBet(): void {
@@ -169,6 +174,28 @@ export class GemsBonanzaComponent {
         this.bet <= this.credit ? this.disableSpin = false : this.disableSpin = true;
 
       }
+    }
+  }
+
+  async checkBonus() {
+    if (this.isBonus) {
+
+      if (this.freeSpins === 0) {
+
+        this.bonusEnded = true;
+        this.disableSpin = true;
+        await this.delay(2050);
+      }
+      else {
+        this.bonusEnded = false;
+
+      }
+    }
+    this.freeSpins === 0 ? this.isBonus = false : this.isBonus = true;
+
+    if (!this.isBonus) {
+      this.pageTitle = 'Gems Bonanza';
+      this.multiplier = 1;
     }
   }
 
@@ -197,7 +224,7 @@ export class GemsBonanzaComponent {
           }
         });
       });
-      await this.delay(100);
+      await this.delay(50);
     }
   }
 
@@ -207,7 +234,9 @@ export class GemsBonanzaComponent {
     for (let i = 0; i < 5; i++) {
       rnd = this.generateRandom();
 
-      let img = `${this.images}gem${rnd}.png`;
+      let img = '';
+
+      rnd < 5 ? img = `${this.images}gamba${rnd}.png` :  img = `${this.images}gem${rnd}.png`;
 
       column.push({ source: img, class: `g${rnd}`, isNew: false, column: columnIndex, index: i, collectionIndex: (colindex + i), animationPlayed: false });
 
@@ -243,47 +272,136 @@ export class GemsBonanzaComponent {
     return rnd;
   }
 
-  async spliceCollection(indexes: number[]) {
-    
-    this.winningClass = '';
-    indexes.forEach(async (index) => {
-      let r = this.generateRandom();
-      this.collection.forEach((col: Gem[]) => {
-        let colAmount = 0;
-        col.forEach(async el => {
-          el.collectionIndex === index ? colAmount++ : '';
-        });
-        let animateNext = false;
-        col.forEach(async el => {
-          let newRow = 4;
-          let row = el.index;
-          let column = el.column;
-          if (animateNext) {
-            el.collectionIndex;
-            el.index--;
-            el.fallOne = true;
-            await this.delay(100);
-          }
-          if (el.collectionIndex === index) {
-            col.splice(el.index, 1);
-            newRow -= (colAmount);
-            col.push({ source: `${this.images}gem${r}.png`, class: `g${r}`, isNew: true, column: column, index: 4, collectionIndex: (index + (4 - row)), animationPlayed: true, fallOne: true });
-            el.fallOne = true;
-            el.collectionIndex--;
-            el.index--;
-            animateNext = true;
-            await this.delay(100);
-            colAmount--;
-          }
+  spliceCollection(indexes: number[], column: number) {
 
-        })
-      });
+    this.winningClass = '';
+    indexes.forEach( index => {
+      let rnd = this.generateRandom();
+      let img = '';
+      rnd < 5 ? img = `${this.images}gamba${rnd}.png` :  img = `${this.images}gem${rnd}.png`;
+      this.collection[column].splice(index, 1, { source: img, class: `g${rnd}`, isNew: true, column: column, index: index, collectionIndex: (column*5 + index), animationPlayed: false });
     });
+
   }
 
-  async checkWin(): Promise < any > {
+  calculateWin(i: number, newcol: Gem[]) {
+    let subTotal = 0;
 
-      for(let i = 5; i< 14; i++) {
+    if (i === 10) {
+      return;
+    }
+    else {
+      subTotal = newcol.length * (i * 1.25) * (this.bet / 100)
+    }
+
+    this.imagetotal = Math.round(subTotal * 100) / 100;
+    this.totalWin += this.imagetotal;
+    this.imageValue = Math.round(subTotal * 100) / 100 / newcol.length;
+  }
+
+  async buyBonus() {
+    this.totalBonusWin = 0;
+    if (this.credit >= this.bonusbuy) {
+      this.credit -= this.bonusbuy;
+      this.disableSpin = true;
+      await this.setupBonusGame();
+      await this.delay(1000);
+      this.showBonusMessage = true;
+      this.freeSpins = 10;
+      this.totalBonusSpins = this.freeSpins;
+      this.checkBonus();
+    }
+  }
+
+  async checkMultiplier(checkCollection: Gem[]) {
+
+    if (this.totalWin > 0) {
+
+      
+
+      for (let i = 1; i < 4; i++) {
+        let multiplierArray = checkCollection.filter(img => img.source === `${this.images}gamba${i}.png`);
+        if (multiplierArray.length > 0) {
+          this.disableSpin = true;
+          this.bonusClass = `g${i}`;
+          await this.delay(1050);
+
+          if (i === 1) {
+            this.multiplier += (2 * multiplierArray.length);
+          }
+          else {
+            i === 2 ? this.multiplier += (3 * multiplierArray.length) : this.multiplier += (5 * multiplierArray.length);
+          }
+          setTimeout(() => {
+
+            this.disableSpin = false;
+          }, 1050);
+        }
+      }
+    }
+  }
+
+
+  
+  hideBonusMessage() {
+    this.showBonusMessage = false;
+    this.disableSpin = false;
+  }
+
+  hideBonusEndedMessage() {
+    this.bonusEnded = false;
+    this.disableSpin = false;
+  }
+  async setupBonusGame() {
+    this.bonusClass = 'g10';
+    this.pageTitle = 'Bonus';
+    this.delay(1050);
+  }
+
+  async bonusBonusBonus(checkCollection: Gem[]) {
+    let bonusArray = checkCollection.filter(img => img.source === `${this.images}gem10.png`);
+
+    if (this.isBonus) {
+      if (bonusArray.length >= 3) {
+        this.disableSpin = true;
+        await this.setupBonusGame();
+        let extraspins = 0;
+        if (bonusArray.length === 3) {
+          extraspins = 3;
+        }
+        else {
+          bonusArray.length > 4 ? extraspins = 8 : extraspins = 5;
+        }
+        this.totalBonusSpins += extraspins;
+        this.freeSpins += extraspins;
+        setTimeout(() => {
+          this.disableSpin = false;
+
+        }, 1050);
+      }
+    }
+    else {
+      this.totalBonusWin = 0;
+      if (bonusArray.length >= 4) {
+
+        this.disableSpin = true;
+        await this.setupBonusGame();
+        await this.delay(1000);
+        this.showBonusMessage = true;
+        if (bonusArray.length === 4) {
+          this.freeSpins = 10;
+        }
+        else {
+          bonusArray.length > 5 ? this.freeSpins = 20 : this.freeSpins = 15;
+        }
+        this.totalBonusSpins = this.freeSpins;
+      }
+    }
+  }
+
+  async checkWin(): Promise<any> {
+
+    for (let i = 5; i < 14; i++) {
       let checkCollection: Gem[] = [];
 
       this.collection.forEach((col: Gem[]) => {
@@ -298,20 +416,32 @@ export class GemsBonanzaComponent {
         this.imageCount = newcol.length;
         this.winningClass = `g${i}`;
         this.winImage = `${this.images}gem${i}.png`;
+        await this.delay(2050);
         let lastIndex = -1;
         let indexes: number[] = [];
 
-        newcol.forEach(() => {
-          let index = checkCollection.findIndex((el, index) => el.source === currentImg && index > lastIndex);
-          indexes.push(index);
-          lastIndex = index;
+        this.calculateWin(i, newcol);
+
+        let columnNumber = 0;
+
+        this.collection.forEach((col: Gem[]) => {
+          newcol.forEach(() => {
+            let index = col.findIndex((el, index) => el.source === currentImg && index > lastIndex);
+            if (index !== -1) {
+
+              indexes.push(index);
+              lastIndex = index;
+            }
+          });
+
+          this.spliceCollection(indexes, columnNumber);
+
+          columnNumber++;
+          indexes = [];
+
+          lastIndex = -1;
         });
 
-        //this.calculateWin(i, newcol);
-
-        await this.delay(2050);
-
-        await this.spliceCollection(indexes);
 
         await this.delay(1050);
 
@@ -320,6 +450,21 @@ export class GemsBonanzaComponent {
 
       }
     }
+    let checkCollection: Gem[] = [];
+
+      this.collection.forEach((col: Gem[]) => {
+        col.forEach(gem => {
+          checkCollection.push(gem);
+        })
+      });
+    if (this.isBonus) {
+      await this.checkMultiplier(checkCollection);
+      this.totalWin *= this.multiplier;
+      this.totalBonusWin += this.totalWin;
+    }
+    this.credit += this.totalWin;
+
+    await this.bonusBonusBonus(checkCollection);
   }
 
 }

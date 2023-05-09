@@ -39,6 +39,7 @@ body {
     padding: 10px;
     justify-content: flex-start;
     background-color: #543513;
+    background: linear-gradient(343deg, #391a05, #90550e, #251007);
 }
 
 .gamegrid>div > div {
